@@ -18,14 +18,14 @@ bToken = "TokenExample1234567890"
 filterByRowLimit <- textInput(
   inputId = "row_limit",
   label = "Row limit:",
-  #placeholder = "Type a number"
-  value = 100
+  placeholder = "Type a number"
+  #value = 100
 )
 
 filterByCompanyId <- textInput(
   inputId = "company_id",
   label = "Company ID:",
-  placeholder = "Number or blank"
+  placeholder = "Number or blank for all"
 )
 
 filterByVacancyId <- textInput(
@@ -60,7 +60,7 @@ cards <- list(
     layout_sidebar(
       sidebar = sidebar("Filter Companies", filterByRowLimit, filterByCompanyId),
       withSpinner(DTOutput("companies")),
-      withSpinner(DTOutput("company_vacancies"))
+      DTOutput("company_vacancies")
     )
   ),
   card(
@@ -178,8 +178,10 @@ server <- function(input, output) {
         list_rbind()
       return(list(df_comp, df_comp_vac))
     } else {
-      result <- call_api(paste(host, "/companies", sep = ""), bToken, limit = as.integer(input$row_limit))
-      call_api_post(paste(host, "/log_search", sep = ""), bToken, user_id = 10, query = paste("/companies?limit=", input$row_limit, sep = ""))
+      actual_row_limit = input$row_limit
+      if (nchar(actual_row_limit) == 0) actual_row_limit = 100
+      result <- call_api(paste(host, "/companies", sep = ""), bToken, limit = as.integer(actual_row_limit))
+      call_api_post(paste(host, "/log_search", sep = ""), bToken, user_id = 10, query = paste("/companies?limit=", actual_row_limit, sep = ""))
       df_comp <- result %>%
         map(~ tibble(
           company_id = .x$company_id,
