@@ -18,7 +18,8 @@ bToken = "TokenExample1234567890"
 filterByRowLimit <- textInput(
   inputId = "row_limit",
   label = "Row limit:",
-  placeholder = "Type a number"
+  #placeholder = "Type a number"
+  value = 100
 )
 
 filterByCompanyId <- textInput(
@@ -66,7 +67,7 @@ cards <- list(
     full_screen = TRUE,
     #card_header("Vacancies"),
     layout_sidebar(
-      sidebar = sidebar("Filter Vacancies", filterByVacancyId, filterBySkillLabel, filterByCompanyName, filterByCanton),
+      sidebar = sidebar("Filter Vacancies", filterByVacancyId, filterBySkillLabel, filterByCompanyName, filterByCanton, filterByRowLimit),
       withSpinner(DTOutput("vacancies"))
     )
   ),
